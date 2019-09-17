@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import BarChart from './barChart';
 import NavBar from './navBar';
 
+
 class Analysis extends Component {
     state = {
         serverData: [
@@ -68,35 +69,50 @@ class Analysis extends Component {
         chartData: {},
     };
 
+    //Select Chart Data
+    handleChange = (event) => {
+        let index = this.state.serverData.findIndex(item => item.title.toString() === event.target.value);
+        console.log(index);
+        this.setState({chartData: this.state.serverData[index]});
 
-    componentDidMount() {
+    };
+
+    componentWillMount() {
         let i = 1;
         let barData;
         let barDatas = [...this.state.serverData];
         barData = JSON.parse(JSON.stringify(barDatas[0]));
         this.setState({chartData: barData});
 
-        setInterval(() => {
-            if(i >= barDatas.length){
-                i = 0;
-            }
-            barData = JSON.parse(JSON.stringify(barDatas[i]));
-            this.setState({chartData: barData});
-            i++;
-
-
-        }, 5000);
+        //Loop throught the Chart Data
+        // setInterval(() => {
+        //     if(i >= barDatas.length){
+        //         i = 0;
+        //     }
+        //     barData = JSON.parse(JSON.stringify(barDatas[i]));
+        //     this.setState({chartData: barData});
+        //     i++;
+        // }, 5000);
 
     }
 
     render() {
+        const analysisTitle = this.state.serverData.map((item) => {
+            return (
+                <option value={item.title}>{item.title}</option>
+            );
+        });
         return (
             <div>
                 <NavBar/>
                 <div className="col-12">
                     <h1>分析</h1>
                     <hr></hr>
-
+                    <div className="form-group">
+                        <select className="form-control" onChange={this.handleChange}>
+                            {analysisTitle}
+                        </select>
+                    </div>
                     <BarChart
                         data = {this.state.chartData.data}
                         title = {this.state.chartData.title}
